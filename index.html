@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogisticAI - Optimizator Rute</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #007bff; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="number"], textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; transition: background-color 0.3s; }
+        button:hover { background-color: #218838; }
+        .output { margin-top: 20px; padding: 15px; border: 1px dashed #007bff; border-radius: 4px; background-color: #e9f5ff; }
+        .footer { margin-top: 30px; text-align: center; font-size: 0.8em; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚚 LogisticAI - Optimizator Rute</h1>
+        <p>Introduceți numărul de livrări și distanțele estimate pentru a obține o optimizare bazată pe eficiența AI.</p>
+
+        <div class="input-group">
+            <label for="numDeliveries">Număr total de livrări:</label>
+            <input type="number" id="numDeliveries" value="10" min="1">
+        </div>
+
+        <div class="input-group">
+            <label for="distances">Distanțe estimate (separate prin virgulă, ex: 5, 12, 8, 20):</label>
+            <textarea id="distances" rows="3">5, 12, 8, 20, 15, 7, 3, 10, 18, 9</textarea>
+        </div>
+
+        <button onclick="optimizeRoute()">Optimizează Ruta</button>
+
+        <div class="output" id="output">
+            Aici va apărea rezultatul optimizării.
+        </div>
+    </div>
+    <div class="footer">
+        Instrument dezvoltat de Greieras Music Studio.
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

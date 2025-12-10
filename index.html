@@ -3,421 +3,383 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LogisticAI Pro - Panou de Control Executiv (Demo)</title>
+    <title>LogisticAI Pro - Dashboard Executiv</title>
     <style>
         :root {
-            /* CULORI DARK MODE FUTURIST */
-            --bg-color: #0b0c10;
-            --card-bg: #1f2833;
-            --primary-color: #66fcf1; /* Cyan Neon */
-            --secondary-color: #45a29e;
-            --success-color: #00e676; /* Verde Neon */
-            --danger-color: #ff1744; /* Rosu Neon */
-            --text-color: #c5c6c7;
-            --white: #ffffff;
-            --sidebar-width: 260px;
+            /* PALETA DE CULORI CYBER-EXECUTIVE */
+            --bg-dark: #0f172a;       /* Albastru inchis profund */
+            --panel-bg: #1e293b;      /* Panouri */
+            --text-main: #f1f5f9;     /* Alb */
+            --text-muted: #94a3b8;    /* Gri deschis */
+            --accent-cyan: #06b6d4;   /* Cyan Neon */
+            --accent-green: #10b981;  /* Verde Succes */
+            --accent-red: #ef4444;    /* Rosu Alerta */
+            --border: #334155;        /* Borduri subtile */
         }
+
+        * { box-sizing: border-box; }
+
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             margin: 0;
             display: flex;
+            height: 100vh;
+            overflow: hidden;
         }
-        
-        /* SIDEBAR */
+
+        /* --- SIDEBAR --- */
         .sidebar {
-            width: var(--sidebar-width);
-            min-height: 100vh;
-            background-color: #151a21;
-            border-right: 1px solid #333;
-            padding: 20px;
-            position: sticky;
-            top: 0;
+            width: 260px;
+            background-color: #0f172a;
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            box-shadow: 4px 0 15px rgba(0,0,0,0.5);
+            padding: 20px;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            padding: 12px 15px;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-main);
+        }
+
+        .nav-btn.active {
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--accent-red);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* --- LOGIN BOX (Overlay) --- */
+        #login-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(5px);
             z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        .sidebar h2 { color: var(--primary-color); margin-top: 0; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; }
-        .sidebar input {
-            width: 100%; padding: 12px; margin-bottom: 10px;
-            background: #0b0c10; border: 1px solid #45a29e; color: white; border-radius: 4px;
-            box-sizing: border-box;
+        .login-card {
+            background: var(--panel-bg);
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            width: 350px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
-        .sidebar button {
-            width: 100%; padding: 12px; border: none; border-radius: 4px;
-            font-weight: bold; cursor: pointer; margin-bottom: 10px;
-            transition: all 0.3s; text-transform: uppercase; font-size: 0.9rem;
+        .login-input {
+            width: 100%; padding: 12px; margin: 10px 0;
+            background: var(--bg-dark); border: 1px solid var(--border);
+            color: white; border-radius: 6px;
         }
-        .sidebar button:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(102, 252, 241, 0.3); }
-        .btn-primary { background-color: var(--primary-color); color: #0b0c10; }
-        .btn-secondary { background-color: var(--secondary-color); color: white; }
-        .btn-danger { background-color: var(--danger-color); color: white; }
+        .login-btn {
+            width: 100%; padding: 12px; margin-top: 10px;
+            background: var(--accent-cyan); color: #000; font-weight: bold;
+            border: none; border-radius: 6px; cursor: pointer;
+        }
 
-        /* MAIN CONTENT */
-        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
-        .header { margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 20px; }
-        .header h1 { margin: 0; font-size: 2.2rem; color: var(--white); }
-        .header p { color: var(--secondary-color); margin-top: 5px; }
+        /* --- MAIN DASHBOARD --- */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
 
-        /* GRID SYSTEM */
-        .dashboard-grid {
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+        }
+        .header h1 { margin: 0; font-size: 1.8rem; }
+        .status-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-green);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .live-dot {
+            width: 8px; height: 8px; background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        /* --- GRID LAYOUT --- */
+        .grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
         }
 
-        /* KPI CARDS */
         .card {
-            background-color: var(--card-bg);
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
             border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            border: 1px solid #333;
-        }
-        .kpi-label { color: var(--secondary-color); font-size: 0.85rem; text-transform: uppercase; margin-bottom: 5px; }
-        .kpi-val { font-size: 2.2rem; font-weight: bold; color: var(--white); text-shadow: 0 0 10px rgba(255,255,255,0.1); }
-        .kpi-change { font-size: 0.8rem; margin-top: 5px; font-weight: bold; }
-        .text-success { color: var(--success-color); }
-        .text-danger { color: var(--danger-color); }
-        .text-primary { color: var(--primary-color); }
-
-        /* CHART PANELS */
-        .chart-panel {
-            grid-column: span 2;
-            min-height: 350px;
-        }
-        .full-width { grid-column: span 4; }
-        .chart-header {
-            font-size: 1.1rem; margin-bottom: 15px; color: var(--white); border-bottom: 1px solid #333; padding-bottom: 10px; display: flex; justify-content: space-between;
         }
 
-        /* SVG CHARTS */
-        .svg-container {
+        /* KPI Cards */
+        .kpi-label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
+        .kpi-val { font-size: 2rem; font-weight: 700; color: var(--text-main); }
+        .kpi-trend { font-size: 0.85rem; margin-top: 5px; display: flex; align-items: center; gap: 5px; }
+        .trend-up { color: var(--accent-green); }
+        .trend-down { color: var(--accent-red); }
+        .trend-neutral { color: var(--accent-cyan); }
+
+        /* SVG CHART CONTAINERS */
+        .chart-container {
             width: 100%;
             height: 250px;
-            background-color: #151a21; /* Fundal grafic mai inchis */
-            border-radius: 4px;
+            background: #161e2e; /* Slightly darker for contrast */
+            border-radius: 6px;
             position: relative;
             overflow: hidden;
-            border: 1px solid #333;
+            margin-top: 15px;
         }
-        .map-container {
-            height: 400px; /* Harta mai mare */
-            background-color: #050505; /* Aproape negru pentru harta */
-        }
+        
         svg { width: 100%; height: 100%; }
 
-        /* TABELE */
-        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        th { text-align: left; color: var(--primary-color); padding: 12px; border-bottom: 1px solid #444; background: #151a21; }
-        td { padding: 12px; border-bottom: 1px solid #333; color: #ddd; }
-        tr:hover { background-color: #2c3e50; }
+        /* Map Styles */
+        .map-card { grid-column: span 3; height: 400px; }
+        .alerts-card { grid-column: span 1; height: 400px; overflow-y: auto; }
+        
+        .alert-item {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+        .alert-item:last-child { border-bottom: none; }
+        .alert-urgent { border-left: 3px solid var(--accent-red); background: rgba(239, 68, 68, 0.05); }
+        .alert-medium { border-left: 3px solid var(--accent-cyan); }
 
-        /* ANIMATII & PULSE */
+        /* --- ANGAJAT VIEW --- */
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 50px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            background: rgba(255,255,255,0.02);
+        }
+        .upload-zone:hover { border-color: var(--accent-cyan); background: rgba(6, 182, 212, 0.05); }
+        
+        /* --- ANIMATIONS --- */
         @keyframes pulse {
-            0% { r: 4; opacity: 1; stroke-width: 0; }
-            50% { r: 8; opacity: 0.5; stroke-width: 2px; }
-            100% { r: 4; opacity: 1; stroke-width: 0; }
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
-        @keyframes dash {
-            to { stroke-dashoffset: 0; }
-        }
-        .live-dot {
-            height: 10px; width: 10px; background-color: var(--danger-color);
-            border-radius: 50%; display: inline-block; animation: pulse-css 1.5s infinite;
-            margin-left: 10px; vertical-align: middle;
-        }
-        @keyframes pulse-css {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 23, 68, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 23, 68, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 23, 68, 0); }
+        
+        /* Truck Animation on Map */
+        @keyframes moveTruck {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(10px); }
+            100% { transform: translateX(0); }
         }
 
-        /* RESPONSIVE */
-        @media (max-width: 1000px) {
-            .dashboard-grid { grid-template-columns: 1fr 1fr; }
-            .chart-panel { grid-column: span 2; }
-            .full-width { grid-column: span 2; }
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .grid { grid-template-columns: 1fr 1fr; }
+            .map-card, .alerts-card { grid-column: span 2; }
         }
         @media (max-width: 600px) {
-            body { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; position: relative; }
-            .dashboard-grid { grid-template-columns: 1fr; }
-            .chart-panel, .full-width, .card { grid-column: span 1; }
+            body { flex-direction: column; overflow-y: auto; }
+            .sidebar { width: 100%; height: auto; }
+            .grid { grid-template-columns: 1fr; }
+            .map-card, .alerts-card { grid-column: span 1; }
         }
+
     </style>
 </head>
 <body>
 
+    <div id="login-overlay">
+        <div class="login-card">
+            <div style="font-size: 2rem; margin-bottom: 20px;">🚛 LogisticAI</div>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Acces Portal Securizat</p>
+            <input type="text" class="login-input" placeholder="Utilizator (patron / angajat)">
+            <input type="password" class="login-input" value="1234" readonly>
+            <button class="login-btn" onclick="performLogin()">ACCESARE SISTEM</button>
+            <p style="font-size: 0.8rem; color: #666; margin-top: 15px;">Demo: patron / 1234</p>
+        </div>
+    </div>
+
     <div class="sidebar">
-        <h2>🚚 LogisticAI</h2>
-        
-        <div id="login-box">
-            <input type="text" id="user-input" placeholder="User (patron)">
-            <input type="password" value="1234" readonly>
-            <button class="btn-primary" onclick="login()">AUTENTIFICARE</button>
-            <p style="font-size: 0.8rem; color: #666; margin-top: 10px;">Demo: patron / 1234</p>
+        <div class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="1" y="3" width="15" height="13"></rect>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+            </svg>
+            LogisticAI
         </div>
 
-        <div id="menu-box" style="display: none;">
-            <div style="padding: 15px; background: #0b0c10; border: 1px solid #45a29e; border-radius: 4px; margin-bottom: 30px;">
-                <div style="font-size: 0.8rem; color: #aaa;">Cont Activ:</div>
-                <div style="color: white; font-weight: bold; font-size: 1.1rem;">PATRON</div>
-            </div>
-            <button class="btn-primary" onclick="switchView('patron')">📊 DASHBOARD</button>
-            <button class="btn-secondary" onclick="switchView('angajat')">📄 DOCUMENTE</button>
-            <button class="btn-danger" onclick="logout()" style="margin-top: auto;">DELOGARE</button>
+        <button class="nav-btn active" onclick="switchView('patron')" id="btn-dash">
+            📊 Dashboard
+        </button>
+        <button class="nav-btn" onclick="switchView('angajat')" id="btn-docs">
+            📄 Documente
+        </button>
+        <div style="flex:1"></div>
+        <div style="padding: 10px; background: rgba(255,255,255,0.05); border-radius: 6px; margin-bottom: 10px;">
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Logat ca:</div>
+            <div style="font-weight: bold; color: var(--accent-cyan);" id="user-display">PATRON</div>
         </div>
+        <button class="nav-btn logout-btn" onclick="logout()">Delogare</button>
     </div>
 
     <div class="main-content">
         
-        <div id="view-patron" style="display: none;">
-            <div class="header">
-                <h1>Panou Executiv <span class="live-dot"></span></h1>
-                <p>Monitorizare în timp real a flotei și a performanței.</p>
+        <div class="header">
+            <div>
+                <h1 id="page-title">Dashboard Executiv</h1>
+                <p style="color: var(--text-muted); margin: 5px 0 0 0;">Prezentare generală a flotei și performanței.</p>
             </div>
-
-            <div class="dashboard-grid">
-                <div class="card" style="border-top: 4px solid var(--success-color);">
-                    <div class="kpi-label">Profit Brut (Live)</div>
-                    <div class="kpi-val" id="kpi-profit">28,500 €</div>
-                    <div class="kpi-change text-success">⬆ 12% vs luna trecută</div>
-                </div>
-                <div class="card" style="border-top: 4px solid var(--primary-color);">
-                    <div class="kpi-label">Cost Mediu / Km</div>
-                    <div class="kpi-val">0.95 €</div>
-                    <div class="kpi-change text-primary">⬇ Optimizat cu AI</div>
-                </div>
-                <div class="card" style="border-top: 4px solid var(--danger-color);">
-                    <div class="kpi-label">Alerte Critice</div>
-                    <div class="kpi-val text-danger">2</div>
-                    <div class="kpi-change">Furt combustibil suspectat</div>
-                </div>
-                <div class="card" style="border-top: 4px solid #fff;">
-                    <div class="kpi-label">Camioane Active</div>
-                    <div class="kpi-val">12<span style="font-size: 1rem; color: #666;">/15</span></div>
-                    <div class="kpi-change text-success">80% Utilizare</div>
-                </div>
-
-                <div class="card full-width">
-                    <div class="chart-header">
-                        <span>📍 Harta Flotei Europa (Live GPS)</span>
-                        <span style="font-size: 0.8rem; color: var(--primary-color);">● Actualizare: Acum 2 sec</span>
-                    </div>
-                    <div class="svg-container map-container">
-                        <svg viewBox="0 0 800 500">
-                            <defs>
-                                <radialGradient id="grad-dot" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-                                    <stop offset="0%" style="stop-color:var(--primary-color);stop-opacity:1" />
-                                    <stop offset="100%" style="stop-color:var(--primary-color);stop-opacity:0" />
-                                </radialGradient>
-                            </defs>
-                            
-                            <path d="M 280 450 L 220 420 L 200 380 L 150 390 L 100 380 L 80 320 L 150 300 L 200 280 L 220 200 L 250 150 L 230 100 L 280 80 L 350 120 L 400 100 L 450 80 L 500 50 L 600 50 L 650 100 L 600 150 L 550 180 L 600 250 L 650 300 L 600 350 L 550 380 L 500 400 L 450 380 L 400 420 L 350 450 Z" 
-                                  fill="#111" stroke="#333" stroke-width="2" />
-                            
-                            <line x1="0" y1="100" x2="800" y2="100" stroke="#222" stroke-width="1" />
-                            <line x1="0" y1="200" x2="800" y2="200" stroke="#222" stroke-width="1" />
-                            <line x1="0" y1="300" x2="800" y2="300" stroke="#222" stroke-width="1" />
-                            <line x1="0" y1="400" x2="800" y2="400" stroke="#222" stroke-width="1" />
-                            <line x1="200" y1="0" x2="200" y2="500" stroke="#222" stroke-width="1" />
-                            <line x1="400" y1="0" x2="400" y2="500" stroke="#222" stroke-width="1" />
-                            <line x1="600" y1="0" x2="600" y2="500" stroke="#222" stroke-width="1" />
-
-                            <text x="180" y="350" fill="#444" font-size="12" font-weight="bold">ES</text> <text x="280" y="280" fill="#444" font-size="12" font-weight="bold">FR</text> <text x="350" y="220" fill="#444" font-size="12" font-weight="bold">DE</text> <text x="400" y="320" fill="#444" font-size="12" font-weight="bold">IT</text> <text x="520" y="280" fill="#444" font-size="12" font-weight="bold">RO</text> <line x1="520" y1="280" x2="350" y2="220" stroke="var(--primary-color)" stroke-width="1" stroke-dasharray="5,5" opacity="0.5" />
-                            <circle cx="435" cy="250" r="4" fill="var(--primary-color)" stroke="var(--bg-color)" stroke-width="2">
-                                <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite" />
-                            </circle>
-                            <text x="445" y="245" fill="white" font-size="10">B-101 (In Miscare)</text>
-
-                            <line x1="520" y1="280" x2="400" y2="320" stroke="var(--primary-color)" stroke-width="1" stroke-dasharray="5,5" opacity="0.5" />
-                            <circle cx="460" cy="300" r="4" fill="var(--primary-color)" stroke="var(--bg-color)" stroke-width="2">
-                                <animate attributeName="r" values="4;6;4" dur="1.5s" repeatCount="indefinite" />
-                            </circle>
-                            <text x="470" y="315" fill="white" font-size="10">CJ-25 (Granita)</text>
-
-                            <circle cx="180" cy="350" r="5" fill="var(--danger-color)" stroke="white" stroke-width="1">
-                                <animate attributeName="opacity" values="1;0;1" dur="0.8s" repeatCount="indefinite" />
-                            </circle>
-                            <text x="190" y="345" fill="var(--danger-color)" font-size="10" font-weight="bold">! ALERTĂ (ES)</text>
-
-                            <circle cx="280" cy="280" r="4" fill="#666" stroke="black" stroke-width="1" />
-                            <text x="290" y="275" fill="#888" font-size="10">TM-55 (Pauză)</text>
-
-                        </svg>
-                    </div>
-                </div>
-
-                <div class="card chart-panel">
-                    <div class="chart-header">Distribuție Flotă (Status)</div>
-                    <div class="svg-container">
-                        <svg viewBox="0 0 200 200">
-                            <circle cx="100" cy="100" r="80" fill="#222" />
-                            <path d="M100,100 L100,20 A80,80 0 1,1 25,145 Z" fill="var(--primary-color)" stroke="#1f2833" stroke-width="2" />
-                            <path d="M100,100 L25,145 A80,80 0 0,1 25,55 Z" fill="#666" stroke="#1f2833" stroke-width="2" />
-                            <path d="M100,100 L25,55 A80,80 0 0,1 100,20 Z" fill="var(--danger-color)" stroke="#1f2833" stroke-width="2" />
-                            <circle cx="100" cy="100" r="45" fill="#1f2833" />
-                            <text x="100" y="105" text-anchor="middle" fill="white" font-size="16" font-weight="bold">82%</text>
-                            <text x="100" y="125" text-anchor="middle" fill="#aaa" font-size="10">Activ</text>
-                        </svg>
-                    </div>
-                    <div style="margin-top: 15px; font-size: 0.8rem; display: flex; justify-content: space-around; border-top: 1px solid #333; padding-top: 10px;">
-                        <span style="color: var(--primary-color)">● Mișcare</span>
-                        <span style="color: #666">● Staționare</span>
-                        <span style="color: var(--danger-color)">● Service</span>
-                    </div>
-                </div>
-
-                <div class="card chart-panel">
-                    <div class="chart-header">Top Consum Șoferi (L/100km)</div>
-                    <div class="svg-container">
-                        <svg viewBox="0 0 300 200">
-                            <line x1="30" y1="180" x2="290" y2="180" stroke="#444" stroke-width="2" />
-                            <line x1="30" y1="20" x2="30" y2="180" stroke="#444" stroke-width="2" />
-                            <text x="25" y="180" text-anchor="end" fill="#666" font-size="10">0</text>
-                            <text x="25" y="100" text-anchor="end" fill="#666" font-size="10">30</text>
-                            
-                            <rect x="50" y="105" width="35" height="75" fill="var(--success-color)" />
-                            <text x="67" y="195" text-anchor="middle" fill="#aaa" font-size="10">Andrei</text>
-                            <text x="67" y="100" text-anchor="middle" fill="white" font-size="10">29.5</text>
-
-                            <rect x="110" y="85" width="35" height="95" fill="var(--primary-color)" />
-                            <text x="127" y="195" text-anchor="middle" fill="#aaa" font-size="10">Ion</text>
-                            
-                            <rect x="170" y="40" width="35" height="140" fill="var(--danger-color)">
-                                <animate attributeName="opacity" values="1;0.7;1" dur="1s" repeatCount="indefinite" />
-                            </rect>
-                            <text x="187" y="195" text-anchor="middle" fill="#aaa" font-size="10">Vlad</text>
-                            <text x="187" y="35" text-anchor="middle" fill="var(--danger-color)" font-size="12" font-weight="bold">! 32.5</text>
-
-                            <rect x="230" y="70" width="35" height="110" fill="var(--primary-color)" />
-                            <text x="247" y="195" text-anchor="middle" fill="#aaa" font-size="10">Mihai</text>
-                        </svg>
-                    </div>
-                </div>
-
-                <div class="card full-width">
-                    <div class="chart-header">
-                        <span>📋 Jurnal Conformitate & Riscuri</span>
-                        <button style="background:none; border:none; color:var(--primary-color); cursor:pointer;">Vezi Tot</button>
-                    </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Tip Alertă</th>
-                                <th>Vehicul / Șofer</th>
-                                <th>Detalii</th>
-                                <th>Prioritate</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Licență Transport</td>
-                                <td>B-101-LOG</td>
-                                <td>Expiră în 7 zile</td>
-                                <td class="text-danger" style="font-weight: bold;">URGENT</td>
-                            </tr>
-                            <tr>
-                                <td>Mentenanță</td>
-                                <td>CJ-25-TRR</td>
-                                <td>Revizie sistem frânare</td>
-                                <td class="text-primary">MEDIE</td>
-                            </tr>
-                            <tr>
-                                <td>Timp Odihnă</td>
-                                <td>Ion Popescu</td>
-                                <td>Încălcare minoră (15 min)</td>
-                                <td class="text-success">REZOLVAT</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
+            <div class="status-badge">
+                <div class="live-dot"></div>
+                SISTEM ONLINE
             </div>
         </div>
 
-        <div id="view-angajat" style="display: none;">
-            <div class="header">
-                <h1>Procesare Documente</h1>
-                <p>Încărcare și analiză AI pentru CMR/Foi de Parcurs.</p>
-            </div>
+        <div id="view-patron" class="grid">
             
-            <div class="card" style="max-width: 600px; margin: 30px auto; text-align: center; border: 2px dashed var(--primary-color);">
-                <div style="padding: 40px;">
-                    <h3 style="color: var(--primary-color); margin-top: 0;">1. Încărcare Document</h3>
-                    <p style="color: #888;">Trage fișierul aici sau apasă butonul</p>
-                    <button class="btn-primary" style="margin: 20px 0; width: auto; padding: 10px 30px;">Selectează Fișier</button>
-                    <p style="font-size: 0.8rem; color: #555;">Formate: PDF, JPG, PNG</p>
+            <div class="card">
+                <div class="kpi-label">Profit Brut (Live)</div>
+                <div class="kpi-val" id="kpi-profit">28,500 €</div>
+                <div class="kpi-trend trend-up">▲ 12.5% vs luna trecută</div>
+            </div>
+            <div class="card">
+                <div class="kpi-label">Cost Mediu / Km</div>
+                <div class="kpi-val">0.92 €</div>
+                <div class="kpi-trend trend-down">▼ 0.03 € (Eficiență)</div>
+            </div>
+            <div class="card">
+                <div class="kpi-label">Alerte Risc</div>
+                <div class="kpi-val" style="color: var(--accent-red)">2</div>
+                <div class="kpi-trend trend-down">Actiune necesară</div>
+            </div>
+            <div class="card">
+                <div class="kpi-label">Camioane Active</div>
+                <div class="kpi-val">12<span style="font-size:1.2rem; color:#666">/15</span></div>
+                <div class="kpi-trend trend-neutral">● 80% Grad utilizare</div>
+            </div>
+
+            <div class="card map-card">
+                <div style="display:flex; justify-content:space-between;">
+                    <strong>📍 Harta Flotei Europa (Live GPS)</strong>
+                    <span style="font-size:0.8rem; color:var(--text-muted)">Actualizat: Acum</span>
+                </div>
+                <div class="chart-container" style="height: 100%; background: #0b1120;">
+                    <svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+                        <defs>
+                            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="1"/>
+                            </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#grid)" />
+
+                        <path d="M 200 350 L 150 320 L 180 250 L 250 200 L 300 150 L 350 120 L 450 100 L 550 80 L 650 150 L 600 250 L 550 300 L 450 350 L 300 380 Z" 
+                              fill="#1e293b" stroke="#334155" stroke-width="2" />
+                        
+                        <line x1="550" y1="300" x2="350" y2="120" stroke="var(--accent-cyan)" stroke-width="1" stroke-dasharray="5,5" opacity="0.4" />
+                        <line x1="550" y1="300" x2="250" y2="200" stroke="var(--accent-cyan)" stroke-width="1" stroke-dasharray="5,5" opacity="0.4" />
+
+                        <g>
+                            <circle cx="550" cy="300" r="5" fill="var(--accent-cyan)" />
+                            <circle cx="550" cy="300" r="10" fill="none" stroke="var(--accent-cyan)" opacity="0.5">
+                                <animate attributeName="r" from="5" to="15" dur="1.5s" repeatCount="indefinite"/>
+                                <animate attributeName="opacity" from="1" to="0" dur="1.5s" repeatCount="indefinite"/>
+                            </circle>
+                            <text x="565" y="305" fill="white" font-size="10">RO: B-101 (Start)</text>
+                        </g>
+
+                        <g>
+                            <circle cx="350" cy="120" r="4" fill="var(--accent-green)" />
+                            <text x="360" y="125" fill="#ccc" font-size="10">DE: TM-55 (Sosire)</text>
+                        </g>
+
+                        <g>
+                            <circle cx="250" cy="200" r="5" fill="var(--accent-red)" />
+                            <text x="260" y="205" fill="var(--accent-red)" font-weight="bold" font-size="10">! ALERT (FR)</text>
+                        </g>
+
+                        <text x="530" y="280" fill="#444" font-weight="bold" font-size="14">RO</text>
+                        <text x="330" y="150" fill="#444" font-weight="bold" font-size="14">DE</text>
+                        <text x="230" y="230" fill="#444" font-weight="bold" font-size="14">FR</text>
+                    </svg>
                 </div>
             </div>
 
-            <div class="card" style="max-width: 600px; margin: 0 auto;">
-                <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 0;">Rezultat Analiză AI</h3>
-                <pre style="background: #111; padding: 15px; border-radius: 4px; color: var(--success-color); overflow-x: auto; font-family: monospace;">
-{
-  "document_type": "CMR",
-  "data_scanare": "2025-12-10 14:30",
-  "detalii": {
-      "expeditor": "Logistics GMBH (DE)",
-      "destinatar": "AutoParts RO (RO)",
-      "marfa": "Piese Auto",
-      "greutate": "1250 kg"
-  },
-  "sofer": "Popescu Andrei",
-  "status_integrare": "VALIDAT ERP"
-}
-                </pre>
-                <button class="btn-success" style="margin-top: 15px;">Confirmă și Trimite în SAGA</button>
+            <div class="card alerts-card">
+                <strong style="margin-bottom: 15px;">⚠️ Jurnal Alerte</strong>
+                <div class="alert-item alert-urgent">
+                    <div style="color:var(--accent-red); font-weight:bold;">URGENT: Licență Transport</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted);">Camion B-101-LOG expira in 7 zile.</div>
+                </div>
+                <div class="alert-item alert-medium">
+                    <div style="color:var(--accent-cyan); font-weight:bold;">MEDIE: Revizie Frâne</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted);">CJ-25-TRR programat joi.</div>
+                </div>
+                <div class="alert-item">
+                    <div style="color:var(--accent-green); font-weight:bold;">INFO: Livrare Reușită</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted);">TM-55 a ajuns la Hamburg.</div>
+                </div>
             </div>
-        </div>
 
-    </div>
-
-    <script>
-        // LOGICA DE LOGIN SI NAVIGARE
-        function login() {
-            document.getElementById('login-box').style.display = 'none';
-            document.getElementById('menu-box').style.display = 'block';
-            switchView('patron');
-        }
-
-        function logout() {
-            document.getElementById('login-box').style.display = 'block';
-            document.getElementById('menu-box').style.display = 'none';
-            document.getElementById('view-patron').style.display = 'none';
-            document.getElementById('view-angajat').style.display = 'none';
-        }
-
-        function switchView(viewName) {
-            document.getElementById('view-patron').style.display = 'none';
-            document.getElementById('view-angajat').style.display = 'none';
-            
-            if (viewName === 'patron') {
-                document.getElementById('view-patron').style.display = 'block';
-            } else {
-                document.getElementById('view-angajat').style.display = 'block';
-            }
-        }
-
-        // SIMULARE DATE LIVE (Profitul creste/scade)
-        setInterval(() => {
-            const profitEl = document.getElementById('kpi-profit');
-            let val = parseFloat(profitEl.innerText.replace(',', '').replace(' €', ''));
-            let change = (Math.random() - 0.5) * 50;
-            val += change;
-            profitEl.innerText = val.toLocaleString('en-US', {maximumFractionDigits: 0}) + ' €';
-        }, 3000);
-        
-        // Autentificare automata pentru confort la refresh
-        // Sterge linia de mai jos daca vrei sa prezinti login-ul de fiecare data
-        // login(); 
-    </script>
-</body>
-</html>
+            <div class="card" style="grid-column: span 2;">
+                <strong>Distribuție Status Flotă</strong>
+                <div class="chart-container">
+                    <svg viewBox="0 0 300 150">
+                        <rect x="200" y="40" width="10" height="10" fill="#06b6d4" /> <text x="215" y="50" fill="#ccc" font-size="10">In Miscare (65%)</text>
+                        <rect x="200" y="60" width="10" height="10" fill="#334155" /> <text x="215" y="70" fill="#ccc" font-size="10">Stationare (25%)</text>
+                        <rect x="200" y="80" width="10" height="10" fill="#ef4444" /> <text x="215" y="90" fill="#ccc" font-size="10">Service (10%)</text>
+                        
+                        <circle r="35" cx="1

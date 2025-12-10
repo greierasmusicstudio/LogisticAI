@@ -115,7 +115,7 @@
         .kpi-danger { color: var(--danger-color); }
         .section-title { grid-column: 1 / -1; margin-top: 30px; margin-bottom: 10px; font-size: 1.5em; color: var(--primary-color); border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
         
-        /* FIX: Am simplificat CSS-ul Chart Panel pentru a asigura vizibilitatea imaginilor */
+        /* Grafic Panel */
         .chart-panel { 
             grid-column: span 2; 
             background-color: var(--card-bg); 
@@ -126,16 +126,63 @@
         }
         .chart-panel h3 { color: var(--text-color); margin-top: 0; }
         
-        /* FIX: Am setat o înălțime fixă pentru imaginea graficului */
-        .chart-img {
-            width: 100%;
-            height: 250px; /* Înălțime fixă */
-            border-radius: 4px;
-            object-fit: cover;
+        /* Stiluri Grafice Simulate (Soluția Finală) */
+        .chart-area {
+            height: 250px; 
+            background-color: #1e1e1e; 
+            border-radius: 8px; 
+            border: 1px solid var(--border-color); /* ADĂUGAT: Bordură pentru vizibilitate */
             margin: 10px 0;
-            background-color: #333; 
+            display: flex;
+            align-items: flex-end; 
+            padding: 10px;
+            box-sizing: border-box;
+            position: relative;
         }
 
+        /* Simulare Pie Chart */
+        .chart-pie {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pie-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            /* Culori de contrast puternic */
+            background-image: conic-gradient(
+                var(--primary-color) 0%, 
+                var(--primary-color) 66%, 
+                #6c757d 66%, 
+                #6c757d 82%,
+                var(--danger-color) 82%, 
+                var(--danger-color) 90%,
+                var(--success-color) 90%
+            );
+            box-shadow: 0 0 15px rgba(77, 208, 225, 0.8); /* Umbră puternică */
+        }
+
+        /* Simulare Bar Chart (Folosim Baruri) */
+        .chart-bar-container {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+        }
+        .bar {
+            width: 15%;
+            background-color: var(--primary-color);
+            margin: 0 5px;
+            transition: height 0.3s;
+            position: relative;
+        }
+        .bar.high { background-color: var(--danger-color); }
+        .bar.low { background-color: var(--success-color); }
+        
         .alert-box { 
             background-color: #4a3a3a; 
             color: var(--danger-color); 
@@ -245,7 +292,11 @@
                 
                 <div class="chart-panel">
                     <h3>Distribuția Utilizării Flotei (%)</h3>
-                    <img src="https://via.placeholder.com/450x300.png?text=Grafic+Simulat%3A+Ocupare+Flota+%28Pie+Chart%29" class="chart-img" alt="Simulare Pie Chart"/>
+                    <div class="chart-area">
+                        <div class="chart-pie">
+                            <div class="pie-circle"></div>
+                        </div>
+                    </div>
                     <div class="chart-data">
                         *În Mișcare (Productiv): 66% | Staționare/Pauză: 16% | Service/Indisponibil: 8%
                     </div>
@@ -253,7 +304,15 @@
 
                 <div class="chart-panel">
                     <h3>Clasament Șoferi (Consum Combustibil L/100km)</h3>
-                    <img src="https://via.placeholder.com/450x300.png?text=Grafic+Simulat%3A+Consum+Soferi+%28Bar+Chart%29" class="chart-img" alt="Simulare Bar Chart"/>
+                    <div class="chart-area">
+                        <div class="chart-bar-container">
+                             <div class="bar" style="height: 70%;"></div>
+                            <div class="bar low" style="height: 65%;"></div>
+                            <div class="bar" style="height: 85%;"></div>
+                            <div class="bar" style="height: 68%;"></div>
+                             <div class="bar high" style="height: 95%;"></div>
+                        </div>
+                    </div>
                     <div class="alert-box">❗ Avertisment: Vlad T. are cel mai mare consum (32.5 L/100km). Necesită Audit AI.</div>
                 </div>
                 
@@ -261,141 +320,13 @@
                 
                 <div class="chart-panel">
                     <h3>Evoluția Cost/Km vs. Marjă Profit (Ultimele 6 Luni)</h3>
-                    <img src="https://via.placeholder.com/450x300.png?text=Grafic+Simulat%3A+Cost+Trend+%28Line+Chart%29" class="chart-img" alt="Simulare Line Chart"/>
+                    <div class="chart-area" style="position: relative;">
+                        <div style="position: absolute; width: 100%; height: 50%; border-bottom: 3px dashed var(--primary-color); top: 25%; opacity: 0.7;"></div>
+                         <div style="position: absolute; width: 100%; height: 80%; border-top: 3px solid var(--success-color); top: 10%; opacity: 0.7;"></div>
+                        <div style="font-size: 0.9em; position: absolute; bottom: 5px; right: 5px;">Cost/Km ⬇️ | Profit ⬆️</div>
+                    </div>
                 </div>
 
                 <div class="chart-panel">
                     <h3>Audit Profitabilitate pe Camion</h3>
-                    <img src="https://via.placeholder.com/450x300.png?text=Grafic+Simulat%3A+Profit+pe+Camion+%28Bar+Chart%29" class="chart-img" alt="Simulare Bar Chart"/>
-                    <div class="alert-box" style="background-color: #3e3e3e; color: #ffeb3b; border: 1px solid #ffeb3b;">⚠️ Alertă: Camionul B-33-MAX generează pierderi.</div>
-                </div>
-                
-                <div class="map-panel" style="grid-column: 1 / -1;">
-                    <h3>📍 Harta Flotei (Simulată GPS)</h3>
-                    <div class="map-placeholder kpi-live">Harta Live a Flotei în Mișcare (GPS)</div>
-                </div>
-                
-                <div class="chart-panel" style="grid-column: span 4;">
-                    <h3>Alerte Tacho & Documente Expirate (Conformitate)</h3>
-                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9em;">
-                        <tr><th style="text-align: left; color: var(--primary-color);">Tip Alertă</th><th style="text-align: left; color: var(--primary-color);">Status</th><th style="text-align: left; color: var(--primary-color);">Prioritate</th></tr>
-                        <tr><td>Licență Transport Expiră</td><td>În 7 zile</td><td style="color: var(--danger-color); font-weight: bold;" class="alert-blink">URGENT</td></tr>
-                        <tr><td>Asigurare Camion B-101</td><td>În 14 zile</td><td style="color: var(--primary-color);">Mare</td></tr>
-                        <tr><td>Timp Odihnă Încălcat (Șofer S.D.)</td><td>Acum 2 ore</td><td>Medie</td></tr>
-                    </table>
-                    <div class="alert-box" style="margin-top: 20px;">🚨 Sfat CTO: Prioritizează rezolvarea alertelor URGENTE.</div>
-                </div>
-            </div>
-        </div>
-
-        <div id="angajat-dashboard" style="display: none;">
-            <div class="header-content">
-                <h1>📄 Interfață Documente (Rol: Angajat)</h1>
-                <p style="color: #aaaaaa;">Sarcină: Încărcați documentele CMR/Foaie de Parcurs pentru analiza JSON și integrare.</p>
-            </div>
-            
-            <div style="background-color: var(--card-bg); padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                <h3 style="color: var(--primary-color);">1. Încărcare Document</h3>
-                <div style="border: 2px dashed var(--primary-color); padding: 20px; text-align: center; margin-bottom: 20px; color: #aaaaaa;">
-                    Trage și plasează un document CMR/Foaie de Parcurs aici.
-                </div>
-                
-                <h3 style="color: var(--success-color);">2. Analiză AI (Simulată)</h3>
-                <button style="width: 100%; margin-bottom: 20px; background-color: var(--success-color); color: #1e1e1e; font-weight: bold;">🚀 PORNEȘTE ANALIZA ȘI INTEGRAREA</button>
-
-                <h3 style="color: #aaaaaa;">3. Rezultat JSON Structurat</h3>
-                <pre style="background-color: #1e1e1e; color: var(--success-color); padding: 15px; border-radius: 4px; overflow-x: auto; border: 1px solid var(--border-color);">
-{
-    "extragere_document": {
-        "tip_document": "CMR (Scrisoare de Trăsură)",
-        "client_furnizor": "Expeditor SRL / Destinatar Logistic SA",
-        "ruta_traseu": "București (RO) -> Budapesta (HU)",
-        "sofer": "Popescu Ion",
-        "data": "2025-12-09",
-        "km_parcursi": "850 km",
-        "marfa": "Piese Auto (12 paleți)",
-        "status_ai": "Verificat"
-    },
-    "status_integrare": "Gata de transmis în ERP (SAGA)"
-}
-                </pre>
-                <button style="width: 100%; background-color: #6c757d; color: #1e1e1e; font-weight: bold;">📥 DESCARCĂ RAPORT EXCEL (JSON RAW)</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let currentRole = 'none';
-
-        function updateUI() {
-            const loggedInStatus = document.getElementById('logged-in-status');
-            const loginSection = document.getElementById('login-section');
-            const roleSwitchSection = document.getElementById('role-switch-section');
-            const patronDashboard = document.getElementById('patron-dashboard');
-            const angajatDashboard = document.getElementById('angajat-dashboard');
-
-            if (currentRole === 'none') {
-                loginSection.style.display = 'block';
-                roleSwitchSection.style.display = 'none';
-                patronDashboard.style.display = 'none';
-                angajatDashboard.style.display = 'none';
-            } else {
-                loginSection.style.display = 'none';
-                roleSwitchSection.style.display = 'block';
-                loggedInStatus.innerHTML = `Logat ca: <b>${currentRole.toUpperCase()}</b>`;
-                
-                if (currentRole === 'patron') {
-                    patronDashboard.style.display = 'block';
-                    angajatDashboard.style.display = 'none';
-                } else if (currentRole === 'angajat') {
-                    patronDashboard.style.display = 'none';
-                    angajatDashboard.style.display = 'block';
-                }
-            }
-        }
-
-        function login(role) {
-            // Ignoram parola, setam doar rolul
-            if (role === 'patron' || role === 'angajat') {
-                currentRole = role;
-                updateUI();
-            } else {
-                alert('Eroare: Rol invalid.');
-            }
-        }
-
-        function switchRole(role) {
-            currentRole = role;
-            updateUI();
-        }
-
-        function logout() {
-            currentRole = 'none';
-            updateUI();
-        }
-
-        // Functie pentru a simula date live pentru KPI-ul de Profit
-        function updateLiveKPI() {
-            const profitElement = document.getElementById('live-profit-kpi');
-            if (profitElement) {
-                // Simulam o creștere/scădere mică
-                const currentText = profitElement.textContent;
-                const currentValue = parseFloat(currentText.replace(/[^0-9.-]+/g,"").replace(',', ''));
-                
-                const randomChange = (Math.random() - 0.5) * 20; 
-                const newValue = (currentValue + randomChange);
-                
-                const formattedValue = newValue.toLocaleString('ro-RO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                
-                profitElement.innerHTML = `${formattedValue} €`;
-            }
-        }
-
-        // Rulează funcția de update KPI la fiecare 3 secunde
-        setInterval(updateLiveKPI, 3000); 
-
-        // Inițializează UI la încărcarea paginii (începe delogat)
-        document.addEventListener('DOMContentLoaded', updateUI);
-    </script>
-</body>
-</html>
+                    <div class="chart-area">

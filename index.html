@@ -3,44 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LogisticAI - Optimizator Rute</title>
+    <title>LogisticAI Pro - Panou de Control Executiv (Demo)</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #007bff; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input[type="number"], textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { background-color: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; transition: background-color 0.3s; }
-        button:hover { background-color: #218838; }
-        .output { margin-top: 20px; padding: 15px; border: 1px dashed #007bff; border-radius: 4px; background-color: #e9f5ff; }
-        .footer { margin-top: 30px; text-align: center; font-size: 0.8em; color: #666; }
+        :root {
+            --bg-color: #f0f2f6;
+            --card-bg: #ffffff;
+            --primary-color: #007bff; /* Albastru Logistic */
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --text-color: #333333;
+            --border-color: #e6e6e6;
+            --sidebar-width: 250px;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 0;
+            margin: 0;
+            display: flex; /* Activează layout-ul cu sidebar */
+        }
+        /* Stiluri Sidebar (Panoul de Login) */
+        .sidebar {
+            width: var(--sidebar-width);
+            min-height: 100vh;
+            background-color: #ffffff;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            box-sizing: border-box;
+            position: sticky;
+            top: 0;
+        }
+        .sidebar h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        .sidebar .login-form input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+        .sidebar .login-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .sidebar .info {
+            font-size: 0.9em;
+            color: #6c757d;
+            border: 1px solid #ffcc00;
+            padding: 10px;
+            background-color: #fff9e6;
+            border-radius: 4px;
+        }
+        .sidebar .role-switch button {
+            background-color: var(--success-color);
+        }
+        .sidebar .role-switch button.logout {
+            background-color: var(--danger-color);
+        }
+        .sidebar .alert-box {
+            background-color: #e6ffed;
+            color: var(--success-color);
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        /* Stiluri pentru Conținutul Principal */
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .header-content {
+            max-width: 100%;
+            margin: 0 auto 30px;
+        }
+        .container {
+            max-width: 100%;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        /* Stiluri Carduri/Grafice */
+        .kpi-card {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: left;
+            border-left: 5px solid var(--primary-color);
+        }
+        .kpi-title { font-size: 0.9em; color: #6c757d; margin-bottom: 5px; }
+        .kpi-value { font-size: 2em; font-weight: 700; color: var(--primary-color); }
+        .kpi-change { font-size: 0.8em; color: var(--success-color); font-weight: 600; }
+        .kpi-danger { color: var(--danger-color); }
+        .section-title { grid-column: 1 / -1; margin-top: 30px; margin-bottom: 10px; font-size: 1.5em; color: var(--primary-color); border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
+        .chart-panel { grid-column: span 2; background-color: var(--card-bg); padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); min-height: 350px; }
+        .chart-message { text-align: center; padding: 50px 0; color: #999; font-style: italic; }
+        .alert-box { background-color: #ffe5e5; color: var(--danger-color); padding: 10px; border-radius: 4px; margin-top: 10px; border: 1px solid var(--danger-color); }
+        .map-panel { grid-column: span 4; background-color: var(--card-bg); padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-top: 20px; }
+        .map-placeholder { height: 300px; background-color: #b3d9ff; background-image: url('https://via.placeholder.com/1200x300.png?text=Simulare+Harta+Flotei+GPS'); background-size: cover; border-radius: 4px; text-align: center; line-height: 300px; font-size: 1.5em; color: white; font-weight: bold; }
+
+        /* --- ANIMAȚII PENTRU LIVE/RISC --- */
+        @keyframes pulse-kpi {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4); }
+            70% { transform: scale(1.01); box-shadow: 0 0 0 10px rgba(0, 123, 255, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 123, 255, 0); }
+        }
+
+        @keyframes blink-alert {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Aplicarea animației pe KPI-uri și Alerte */
+        .kpi-live {
+            animation: pulse-kpi 2s infinite;
+        }
+        .alert-blink {
+            animation: blink-alert 1s step-end infinite;
+            font-weight: bold;
+        }
+
+
+        /* Responsiveness */
+        @media (max-width: 992px) {
+            .container { grid-template-columns: repeat(2, 1fr); }
+            .chart-panel { grid-column: span 2; }
+            .map-panel { grid-column: span 2; }
+        }
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; min-height: auto; position: relative; }
+            .main-content { padding: 10px; }
+            .container { grid-template-columns: 1fr; }
+            .chart-panel, .map-panel { grid-column: span 1; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🚚 LogisticAI - Optimizator Rute</h1>
-        <p>Introduceți numărul de livrări și distanțele estimate pentru a obține o optimizare bazată pe eficiența AI.</p>
 
-        <div class="input-group">
-            <label for="numDeliveries">Număr total de livrări:</label>
-            <input type="number" id="numDeliveries" value="10" min="1">
+    <div class="sidebar">
+        <h2 style="margin-top: 0;">🔑 Autentificare</h2>
+
+        <div id="login-section">
+            <div class="login-form">
+                <input type="text" id="username" placeholder="Username (patron / angajat)">
+                <input type="password" id="password" placeholder="Parolă (1234)">
+                <button onclick="login('patron')">Login Patron</button>
+                <button onclick="login('angajat')" style="background-color: #6c757d;">Login Angajat</button>
+            </div>
+            <div class="info">Demo: patron / angajat (Parolă: 1234)</div>
         </div>
 
-        <div class="input-group">
-            <label for="distances">Distanțe estimate (separate prin virgulă, ex: 5, 12, 8, 20):</label>
-            <textarea id="distances" rows="3">5, 12, 8, 20, 15, 7, 3, 10, 18, 9</textarea>
+        <div id="role-switch-section" style="display: none;">
+            <div class="alert-box" id="logged-in-status">Logat ca: Patron</div>
+            <div class="role-switch">
+                <button onclick="switchRole('patron')">Vizualizare: Patron</button>
+                <button onclick="switchRole('angajat')" style="background-color: #6c757d;">Vizualizare: Angajat</button>
+                <button class="logout" onclick="logout()">🚪 Delogare</button>
+            </div>
         </div>
-
-        <button onclick="optimizeRoute()">Optimizează Ruta</button>
-
-        <div class="output" id="output">
-            Aici va apărea rezultatul optimizării.
-        </div>
+        
     </div>
-    <div class="footer">
-        Instrument dezvoltat de Greieras Music Studio.
-    </div>
-    <script src="script.js"></script>
-</body>
-</html>
+
+    <div class="main-content">
+        <div id="patron-dashboard">
+            <div class="header-content">
+                <h1>🚛 LogisticAI Pro - Panou de Control Executiv (DEMO)</h1>
+                <p style="color: #6c757d;">Analiză Multi-Dimensională: Decizii strategice pentru atingerea ARR de 50.000.000 €.</p>
+            </div>
+
+            <div class="container">
+                <div class="section-title">Statistici Financiare & Risc (Ultima Lună)</div>
+                
+                <div class="kpi-card kpi-live"><div class="kpi-title">💰 Profit Brut Total</div><div class="kpi-value" id="live-profit-kpi" style="color: var(--success-color);">28,500.00 €</div><div class="kpi-change">⬆️ 12% vs. Perioada Ant.</div></div>
+                <div class="kpi-card"><div class="kpi-title">📉 Cost/Km (Media Flotei)</div><div class="kpi-value" style="color: #008080;">0.95 €/Km</div><div class="kpi-change">⬇️ 0.02 €/Km (Eficiență)</div></div>
+                <div class="kpi-card kpi-live" style="border-left: 5px solid var(--danger-color);"><div class="kpi-title">🚨 Anomalii AI Detectate</div><div class="kpi-value kpi-danger">2 Cazuri</div><div class="kpi-change kpi-danger">Stop Furt Combustibil</div></div>
+                <div class="kpi-card"><div class="kpi-title">📈 Marjă Profit Net</div><div class="kpi-value" style="color: var(--success-color);">15%</div><div class="kpi-change">⬆️ 1.5 puncte</div></div>
+
+                <div class="section-title">Control Operațional, Utilizare Flotă și Performanță Șoferi</div>
+                <div class="chart-panel"><h3>Distribuția Utilizării Flotei (%)</h3><div class="chart-message">[ Simulare Pie Chart (În Mișcare: 66%, Staționare: 16%) ]</div></div>
+                <div class="chart-panel"><h3>Clasament Șoferi (Consum Combustibil L/100km)</h3><div class="chart-message">[ Simulare Bar Chart (Vlad T. - 32.5 L/100km) ]</div><div class="alert-box">❗ Avertisment: Vlad T. are cel mai mare consum (32.5 L/100km). Necesită Audit AI.</div></div>
+                
+                <div class="section-title">Harta Flotei și Managementul Riscului Fiscal</div>
+                <div class="map-panel"><h3>📍 Harta Flotei (Simulată GPS)</h3><div class="map-placeholder kpi-live">Harta Live a Flotei în Mișcare (GPS)</div></div>
+                
+                <div class="chart-panel" style="grid-column: span 2;"><h3>Alerte Tacho & Documente Expirate (Conformitate)</h3><table style="width: 100%; border-collapse: collapse; font-size: 0.9em;"><tr><th style="text-align: left;">Tip Alertă</th><th style="text-align: left;">Status</th><th style="text-align: left;">Prioritate</th></tr><tr><td>Licență Transport Expiră</td><td>În 7 zile</td><td style="color: var(--danger-color); font-weight: bold;" class="alert-blink">URGENT</td></tr><tr><td>Asigurare Camion B-101</td><td>În 14 zile</td><td>Mare</td></tr><tr><td>Timp Odihnă Încălcat (Șofer S.D.)</td><td>Acum 2 ore</td><td>Medie</td></tr></table><div class="alert-box" style="margin-top: 20px;">🚨 Sfat CTO: Prioritizează rezolvarea alertelor URGENTE.</div></div>
+                
+                <div class="chart-panel" style="grid-column: span 2;"><h3>Audit Profitabilitate pe Camion</h3><div class="chart-message">[ Simulare Bar Chart (Camionul B-33-MAX generează pierderi: -500 €) ]</div><div class="alert-box" style="background-color: #fff3cd; color: #856404; border: 1px solid #856404;">⚠️ Alertă: Camionul B-33-MAX generează pierderi.</div></div>
+            </div>
+        </div>
+
+        <div id="angajat-dashboard" style="display: none;">
+            <div class="header-content">
+                <h1>📄 Interfață Documente (Rol: Angajat)</h1>
+                <p style="color: #6c757d;">Sarcină: Încărcați documentele CMR/Foaie de Parcurs pentru analiza JSON și integrare.</p>
+            </div>
+            
+            <div style="background-color: var(--card-bg); padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">

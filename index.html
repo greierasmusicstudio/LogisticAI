@@ -114,6 +114,8 @@
         .kpi-change { font-size: 0.8em; color: var(--success-color); font-weight: 600; }
         .kpi-danger { color: var(--danger-color); }
         .section-title { grid-column: 1 / -1; margin-top: 30px; margin-bottom: 10px; font-size: 1.5em; color: var(--primary-color); border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
+        
+        /* FIX: Am simplificat CSS-ul Chart Panel pentru a asigura vizibilitatea imaginilor */
         .chart-panel { 
             grid-column: span 2; 
             background-color: var(--card-bg); 
@@ -121,19 +123,19 @@
             border-radius: 8px; 
             box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
             min-height: 350px; 
-            display: flex; /* Pentru a centra imaginea */
-            flex-direction: column;
         }
         .chart-panel h3 { color: var(--text-color); margin-top: 0; }
+        
+        /* FIX: Am setat o înălțime fixă pentru imaginea graficului */
         .chart-img {
             width: 100%;
-            height: auto;
+            height: 250px; /* Înălțime fixă */
             border-radius: 4px;
-            flex-grow: 1; /* Permite imaginii să umple spațiul */
-            object-fit: contain;
+            object-fit: cover;
             margin: 10px 0;
-            background-color: #333; /* Fundal pentru grafice */
+            background-color: #333; 
         }
+
         .alert-box { 
             background-color: #4a3a3a; 
             color: var(--danger-color); 
@@ -243,7 +245,7 @@
                 
                 <div class="chart-panel">
                     <h3>Distribuția Utilizării Flotei (%)</h3>
-                    <img src="https://via.placeholder.com/450x300.png?text=Grafic+Simulat%3A+Ocupare+Flota+%28Pie+Chart%29" class="chart-img" alt="Simulare Pie Chart" style="background-color: #2e2e2e;"/>
+                    <img src="https://via.placeholder.com/450x300.png?text=Grafic+Simulat%3A+Ocupare+Flota+%28Pie+Chart%29" class="chart-img" alt="Simulare Pie Chart"/>
                     <div class="chart-data">
                         *În Mișcare (Productiv): 66% | Staționare/Pauză: 16% | Service/Indisponibil: 8%
                     </div>

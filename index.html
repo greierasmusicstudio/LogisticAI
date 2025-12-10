@@ -7,14 +7,14 @@
     <style>
         :root {
             /* PALETA DE CULORI CYBER-EXECUTIVE */
-            --bg-dark: #0f172a;       /* Albastru inchis profund */
-            --panel-bg: #1e293b;      /* Panouri */
-            --text-main: #f1f5f9;     /* Alb */
-            --text-muted: #94a3b8;    /* Gri deschis */
-            --accent-cyan: #06b6d4;   /* Cyan Neon */
-            --accent-green: #10b981;  /* Verde Succes */
-            --accent-red: #ef4444;    /* Rosu Alerta */
-            --border: #334155;        /* Borduri subtile */
+            --bg-dark: #0f172a;       
+            --panel-bg: #1e293b;      
+            --text-main: #f1f5f9;     
+            --text-muted: #94a3b8;    
+            --accent-cyan: #06b6d4;   
+            --accent-green: #10b981;  
+            --accent-red: #ef4444;    
+            --border: #334155;        
         }
 
         * { box-sizing: border-box; }
@@ -142,7 +142,7 @@
             align-items: center;
             gap: 6px;
         }
-        .live-dot {
+        .live-dot-status {
             width: 8px; height: 8px; background: var(--accent-green);
             border-radius: 50%;
             animation: pulse 2s infinite;
@@ -172,28 +172,81 @@
         .trend-down { color: var(--accent-red); }
         .trend-neutral { color: var(--accent-cyan); }
 
-        /* SVG CHART CONTAINERS */
+        /* SVG CHART CONTAINERS (Bar & Pie) */
         .chart-container {
             width: 100%;
             height: 250px;
-            background: #161e2e; /* Slightly darker for contrast */
+            background: #161e2e;
             border-radius: 6px;
             position: relative;
             overflow: hidden;
             margin-top: 15px;
         }
-        
         svg { width: 100%; height: 100%; }
 
-        /* Map Styles */
-        .map-card { grid-column: span 3; height: 400px; }
-        .alerts-card { grid-column: span 1; height: 400px; overflow-y: auto; }
+        /* --- MAP STYLES (NOUL SISTEM) --- */
+        .map-card { grid-column: span 3; height: 500px; padding: 0; position: relative; overflow: hidden; background: #000; }
+        .alerts-card { grid-column: span 1; height: 500px; overflow-y: auto; }
         
-        .alert-item {
-            padding: 10px;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.9rem;
+        /* Imaginea hartii */
+        .map-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Umple cardul */
+            opacity: 0.6; /* O facem putin mai intunecata */
+            transition: opacity 0.5s;
         }
+        .map-image:hover { opacity: 0.8; }
+
+        /* Punctele Neon (Camioanele) */
+        .truck-point {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: var(--accent-cyan);
+            border-radius: 50%;
+            transform: translate(-50%, -50%); /* Centrare punct */
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--accent-cyan), 0 0 20px var(--accent-cyan);
+            z-index: 2;
+        }
+        
+        /* Eticheta Camion (Tooltip) */
+        .truck-label {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .truck-point:hover .truck-label { opacity: 1; }
+
+        /* Animatii specifice punctelor */
+        .pulse-cyan { animation: pulseCyan 2s infinite; }
+        .pulse-red { background-color: var(--accent-red); box-shadow: 0 0 10px var(--accent-red); animation: pulseRed 1s infinite; }
+        .pulse-green { background-color: var(--accent-green); box-shadow: 0 0 10px var(--accent-green); }
+
+        @keyframes pulseCyan {
+            0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(6, 182, 212, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+        }
+        @keyframes pulseRed {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        /* Alerte */
+        .alert-item { padding: 10px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
         .alert-item:last-child { border-bottom: none; }
         .alert-urgent { border-left: 3px solid var(--accent-red); background: rgba(239, 68, 68, 0.05); }
         .alert-medium { border-left: 3px solid var(--accent-cyan); }
@@ -209,20 +262,6 @@
             background: rgba(255,255,255,0.02);
         }
         .upload-zone:hover { border-color: var(--accent-cyan); background: rgba(6, 182, 212, 0.05); }
-        
-        /* --- ANIMATIONS --- */
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-        }
-        
-        /* Truck Animation on Map */
-        @keyframes moveTruck {
-            0% { transform: translateX(0); }
-            50% { transform: translateX(10px); }
-            100% { transform: translateX(0); }
-        }
 
         /* Responsive */
         @media (max-width: 1024px) {
@@ -284,7 +323,7 @@
                 <p style="color: var(--text-muted); margin: 5px 0 0 0;">Prezentare generală a flotei și performanței.</p>
             </div>
             <div class="status-badge">
-                <div class="live-dot"></div>
+                <div class="live-dot-status"></div>
                 SISTEM ONLINE
             </div>
         </div>
@@ -313,48 +352,34 @@
             </div>
 
             <div class="card map-card">
-                <div style="display:flex; justify-content:space-between;">
-                    <strong>📍 Harta Flotei Europa (Live GPS)</strong>
-                    <span style="font-size:0.8rem; color:var(--text-muted)">Actualizat: Acum</span>
+                <img src="harta.jpg" alt="Harta Flotei" class="map-image" onerror="this.style.display='none'; this.parentElement.style.background='#111';">
+                
+                <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); color:#444; pointer-events:none;">
+                    (Upload 'harta.jpg' in GitHub pentru fundal)
                 </div>
-                <div class="chart-container" style="height: 100%; background: #0b1120;">
-                    <svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
-                        <defs>
-                            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="1"/>
-                            </pattern>
-                        </defs>
-                        <rect width="100%" height="100%" fill="url(#grid)" />
 
-                        <path d="M 200 350 L 150 320 L 180 250 L 250 200 L 300 150 L 350 120 L 450 100 L 550 80 L 650 150 L 600 250 L 550 300 L 450 350 L 300 380 Z" 
-                              fill="#1e293b" stroke="#334155" stroke-width="2" />
-                        
-                        <line x1="550" y1="300" x2="350" y2="120" stroke="var(--accent-cyan)" stroke-width="1" stroke-dasharray="5,5" opacity="0.4" />
-                        <line x1="550" y1="300" x2="250" y2="200" stroke="var(--accent-cyan)" stroke-width="1" stroke-dasharray="5,5" opacity="0.4" />
+                <div class="truck-point pulse-cyan" style="top: 65%; left: 75%;">
+                    <div class="truck-label">RO: B-101-LOG</div>
+                </div>
 
-                        <g>
-                            <circle cx="550" cy="300" r="5" fill="var(--accent-cyan)" />
-                            <circle cx="550" cy="300" r="10" fill="none" stroke="var(--accent-cyan)" opacity="0.5">
-                                <animate attributeName="r" from="5" to="15" dur="1.5s" repeatCount="indefinite"/>
-                                <animate attributeName="opacity" from="1" to="0" dur="1.5s" repeatCount="indefinite"/>
-                            </circle>
-                            <text x="565" y="305" fill="white" font-size="10">RO: B-101 (Start)</text>
-                        </g>
+                <div class="truck-point pulse-green" style="top: 45%; left: 48%;">
+                    <div class="truck-label">DE: TM-55-SDE</div>
+                </div>
 
-                        <g>
-                            <circle cx="350" cy="120" r="4" fill="var(--accent-green)" />
-                            <text x="360" y="125" fill="#ccc" font-size="10">DE: TM-55 (Sosire)</text>
-                        </g>
+                <div class="truck-point pulse-cyan" style="top: 75%; left: 52%;">
+                    <div class="truck-label">IT: CJ-25-TRR</div>
+                </div>
 
-                        <g>
-                            <circle cx="250" cy="200" r="5" fill="var(--accent-red)" />
-                            <text x="260" y="205" fill="var(--accent-red)" font-weight="bold" font-size="10">! ALERT (FR)</text>
-                        </g>
+                <div class="truck-point pulse-red" style="top: 55%; left: 35%;">
+                    <div class="truck-label">FR: ! ALERT</div>
+                </div>
+                
+                 <div class="truck-point pulse-cyan" style="top: 78%; left: 25%;">
+                    <div class="truck-label">ES: B-33-MAX</div>
+                </div>
 
-                        <text x="530" y="280" fill="#444" font-weight="bold" font-size="14">RO</text>
-                        <text x="330" y="150" fill="#444" font-weight="bold" font-size="14">DE</text>
-                        <text x="230" y="230" fill="#444" font-weight="bold" font-size="14">FR</text>
-                    </svg>
+                <div style="position:absolute; top:15px; left:15px; color:white; background:rgba(0,0,0,0.7); padding:5px 10px; border-radius:4px; font-size:0.8rem;">
+                    📍 Live GPS Tracking
                 </div>
             </div>
 
@@ -372,6 +397,10 @@
                     <div style="color:var(--accent-green); font-weight:bold;">INFO: Livrare Reușită</div>
                     <div style="font-size:0.8rem; color:var(--text-muted);">TM-55 a ajuns la Hamburg.</div>
                 </div>
+                <div class="alert-item">
+                    <div style="color:var(--accent-green); font-weight:bold;">INFO: Alimentare</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted);">B-33-MAX - 400L Diesel.</div>
+                </div>
             </div>
 
             <div class="card" style="grid-column: span 2;">
@@ -381,5 +410,110 @@
                         <rect x="200" y="40" width="10" height="10" fill="#06b6d4" /> <text x="215" y="50" fill="#ccc" font-size="10">In Miscare (65%)</text>
                         <rect x="200" y="60" width="10" height="10" fill="#334155" /> <text x="215" y="70" fill="#ccc" font-size="10">Stationare (25%)</text>
                         <rect x="200" y="80" width="10" height="10" fill="#ef4444" /> <text x="215" y="90" fill="#ccc" font-size="10">Service (10%)</text>
-                        
-                        <circle r="35" cx="1
+                        <circle r="35" cx="100" cy="75" fill="transparent" stroke="#334155" stroke-width="70" stroke-dasharray="25 75" transform="rotate(-90 100 75)" />
+                        <circle r="35" cx="100" cy="75" fill="transparent" stroke="#ef4444" stroke-width="70" stroke-dasharray="10 90" transform="rotate(0 100 75)" />
+                        <circle r="35" cx="100" cy="75" fill="transparent" stroke="#06b6d4" stroke-width="70" stroke-dasharray="65 35" transform="rotate(36 100 75)" />
+                        <circle r="40" cx="100" cy="75" fill="#1e293b" />
+                        <text x="100" y="80" text-anchor="middle" fill="white" font-weight="bold">15 Unit.</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="card" style="grid-column: span 2;">
+                <strong>Consum Combustibil (L/100km)</strong>
+                <div class="chart-container">
+                    <svg viewBox="0 0 300 150">
+                        <line x1="30" y1="130" x2="280" y2="130" stroke="#334155" stroke-width="1" />
+                        <line x1="30" y1="20" x2="30" y2="130" stroke="#334155" stroke-width="1" />
+                        <rect x="50" y="50" width="30" height="80" fill="#10b981" />
+                        <text x="65" y="145" text-anchor="middle" fill="#94a3b8" font-size="10">Andrei</text>
+                        <text x="65" y="45" text-anchor="middle" fill="white" font-size="10">29L</text>
+                        <rect x="100" y="20" width="30" height="110" fill="#ef4444" />
+                        <text x="115" y="145" text-anchor="middle" fill="#94a3b8" font-size="10">Vlad</text>
+                        <text x="115" y="15" text-anchor="middle" fill="#ef4444" font-weight="bold" font-size="10">33L !</text>
+                        <rect x="150" y="40" width="30" height="90" fill="#06b6d4" />
+                        <text x="165" y="145" text-anchor="middle" fill="#94a3b8" font-size="10">Ion</text>
+                        <rect x="200" y="45" width="30" height="85" fill="#06b6d4" />
+                        <text x="215" y="145" text-anchor="middle" fill="#94a3b8" font-size="10">Mihai</text>
+                    </svg>
+                </div>
+            </div>
+
+        </div> <div id="view-angajat" style="display: none;">
+            <div class="card" style="max-width: 800px; margin: 0 auto;">
+                <h2>Procesare Documente Inteligenta</h2>
+                <p style="color: var(--text-muted); margin-bottom: 30px;">
+                    Încarcă o poză cu CMR sau Foaia de Parcurs. AI-ul va extrage automat datele pentru SAGA.
+                </p>
+
+                <div class="upload-zone" onclick="simulateUpload()">
+                    <div style="font-size: 3rem; margin-bottom: 10px;">☁️</div>
+                    <div style="font-size: 1.2rem; font-weight: bold; color: var(--accent-cyan);">Click pentru Upload</div>
+                    <div style="color: var(--text-muted);">Suportă: .JPG, .PNG, .PDF (Max 5MB)</div>
+                </div>
+
+                <div id="ai-result" style="display: none; margin-top: 30px; background: #000; padding: 20px; border-radius: 8px; border: 1px solid var(--accent-green);">
+                    <div style="color: var(--accent-green); font-weight: bold; margin-bottom: 10px;">✅ ANALIZĂ COMPLETĂ</div>
+                    <pre style="color: #ccc; font-family: monospace; white-space: pre-wrap;">
+{
+  "tip_document": "CMR",
+  "data_scanare": "10-12-2025",
+  "expeditor": "Logistics GMBH (Germania)",
+  "destinatar": "AutoParts RO (Bucuresti)",
+  "marfa": "Piese Auto - 3 Paleti",
+  "greutate": "1250 kg",
+  "sofer": "Popescu Andrei"
+}
+                    </pre>
+                    <button class="login-btn" style="background: var(--accent-green); width: auto; padding: 10px 30px; margin-top: 15px;">
+                        CONFIRMĂ ȘI TRIMITE ÎN SAGA
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function performLogin() {
+            document.getElementById('login-overlay').style.display = 'none';
+        }
+
+        function switchView(role) {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('view-patron').style.display = 'none';
+            document.getElementById('view-angajat').style.display = 'none';
+
+            if (role === 'patron') {
+                document.getElementById('view-patron').style.display = 'grid';
+                document.getElementById('btn-dash').classList.add('active');
+                document.getElementById('page-title').innerText = "Dashboard Executiv";
+                document.getElementById('user-display').innerText = "PATRON";
+            } else {
+                document.getElementById('view-angajat').style.display = 'block';
+                document.getElementById('btn-docs').classList.add('active');
+                document.getElementById('page-title').innerText = "Centru Documente";
+                document.getElementById('user-display').innerText = "ANGAJAT";
+            }
+        }
+
+        function logout() { location.reload(); }
+
+        function simulateUpload() {
+            const zone = document.querySelector('.upload-zone');
+            zone.innerHTML = '<div style="color:white;">⏳ Analizez cu Gemini AI...</div>';
+            setTimeout(() => {
+                zone.innerHTML = '<div style="color:var(--accent-green);">✔ Fișier Încărcat</div>';
+                document.getElementById('ai-result').style.display = 'block';
+            }, 2000);
+        }
+
+        setInterval(() => {
+            let el = document.getElementById('kpi-profit');
+            let current = parseInt(el.innerText.replace(/[^0-9]/g, ''));
+            let change = Math.floor(Math.random() * 500) - 250;
+            el.innerText = (current + change).toLocaleString() + " €";
+        }, 3000);
+    </script>
+</body>
+</html>
